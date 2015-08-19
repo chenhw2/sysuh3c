@@ -29,7 +29,7 @@
 #include <syslog.h>
 #include "eaputils.h"
 #include <stdarg.h>
-#include <uci.h>
+//#include <uci.h>
 #include <termios.h>
 #include <assert.h>
 
@@ -180,8 +180,10 @@ int main(int argc, char **argv) {
 
     _Bool toLogoff = 0;
 
+    /*
     struct uci_context *uci_ctx = NULL;
     struct uci_ptr uci_iface_ptr;
+    */
 
     if (geteuid() != 0) {
         display_msg(LOG_ERR, "You have to run the program as root\n");
@@ -237,6 +239,7 @@ int main(int argc, char **argv) {
     }
 
     if (strlen(iface) == 0) {
+        /*
         uci_ctx = uci_alloc_context();
         char *expr = strdup("sysuh3c.@network[0].ifname");
         if (uci_lookup_ptr(uci_ctx, &uci_iface_ptr, expr, true) != UCI_OK) {
@@ -248,6 +251,9 @@ int main(int argc, char **argv) {
             strcpy(iface, "eth0");
         uci_free_context(uci_ctx);
         free(expr);
+        */
+        display_msg(LOG_ERR, "no interface specified");
+        exit(EXIT_FAILURE);
     }
 
     if (eapauth_init(&eapauth, iface) != 0)
@@ -268,7 +274,7 @@ int main(int argc, char **argv) {
     }
 
     if (strlen(eapauth.password) == 0) {
-        get_pass(&eapauth.password, sizeof(eapauth.password), "Password");
+        get_pass((char *) &eapauth.password, sizeof(eapauth.password), "Password");
     }
 
     eapauth_set_status_listener(status_callback);

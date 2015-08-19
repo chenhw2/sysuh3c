@@ -13,7 +13,7 @@ define Package/$(PKG_NAME)
         CATEGORY:=Utilities
         DEPENDS:=+libc +libgcc +libuci
         TITLE:=sysuh3c
-        PKGARCH:=ramips
+        PKGARCH:=ramips_24kec
         MAINTAINER:=zonyitoo
 endef
 
