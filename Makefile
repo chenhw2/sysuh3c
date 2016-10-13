@@ -31,9 +31,9 @@ endef
 #define Build/Compile
 #endef
 
-#define Package/$(PKG_NAME)/conffiles
+define Package/$(PKG_NAME)/conffiles
 /etc/config/sysuh3c
-#endef
+endef
 
 define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR) $(1)/etc/init.d
