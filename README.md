@@ -1,40 +1,32 @@
-# SYSU H3C Client
-
+SYSU H3C Client
+===
 A CLI H3C Client for [OpenWRT](http://openwrt.org)
 
 *Only tested in SYSU east campus*
 
-## Compilation
 
-### Compile with OpenWRT-SDK
+Compilation
+---
+ - Compile with OpenWRT-SDK
+   ```bash
+   # Using ar71xx as example
+   tar xjf OpenWrt-SDK-ar71xx-for-linux-x86_64-gcc-4.8-linaro_uClibc-0.9.33.2.tar.bz2
+   cd OpenWrt-SDK-ar71xx-*
+   # Get Makefile
+   git clone git@github.com:chenhw2/sysuh3c.git -b openwrt package/sysuh3c
+   # Select target package: Network -> sysuh3c
+   make menuconfig
+   # Compile
+   make package/sysuh3c/compile V=99
+   ```
 
-* First you should get the **OpenWRT-SDK**. See [here](http://wiki.openwrt.org/zh-cn/doc/howto/obtain.firmware.sdk) for more detail.
-
-* Then `cd` into the SDK directory
-
-```bash
-git clone git@github.com:chenhw2/sysuh3c.git -b openwrt package/sysuh3c
-```
-
-* Modify sysuh3c/Makefile
-
-```makefile
-define Package/$(PKG_NAME)
-    ...
-    PKGARCH:=[arch]
-endef
-```
-
-* You will get the `sysuh3c_[version]-1_[arch].ipk` in `bin/[arch]/package`
-
-## Usage
-
-```bash
--h --help        print help screen
--u --user        user account
--p --password    password
--i --iface       network interface (default is eth0)
--d --daemonize   daemonize
--c --colorize    colorize
--l --logoff      logoff
-```
+Usage
+---
+ ```bash
+ -h --help        print help screen
+ -u --username    user account
+ -p --password    password
+ -i --iface       network interface (default is eth0)
+ -d --daemonize   daemonize
+ -l --logoff      logoff
+ ```

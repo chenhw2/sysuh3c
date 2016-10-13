@@ -12,15 +12,15 @@ get_config() {
 }
 
 start() {
-    config_load sysuh3c
-    config_foreach get_config sysuh3c
+	config_load sysuh3c
+	config_foreach get_config sysuh3c
 
 	[ "$enable" = 1 ] || exit 0
 
 	ifname=$(uci -q get network.wan.ifname)
-	[ -n "$ifname" ] || exit 1
+	[ -n "$ifname" ] && [ -n "$username" ] && [ -n "$password" ] || exit 1
 
-    echo "sysuh3c -i $ifname -u $username -p $password"
+	echo " # sysuh3c --iface $ifname --username $username --password $password"
 	/usr/bin/sysuh3c -i $ifname -u $username -p $password -d
 	return $?
 }
