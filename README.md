@@ -13,7 +13,7 @@ A CLI H3C Client for [OpenWRT](http://openwrt.org)
 * Then `cd` into the SDK directory
 
 ```bash
-git clone git@github.com:zonyitoo/sysuh3c.git -b openwrt package/sysuh3c
+git clone git@github.com:chenhw2/sysuh3c.git -b openwrt package/sysuh3c
 ```
 
 * Modify sysuh3c/Makefile
