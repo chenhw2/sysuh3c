@@ -145,7 +145,7 @@ static void get_pass(char *storage, size_t length, const char *promote) {
 
 static struct option arglist[] = {
         {"help", no_argument, NULL, 'h'},
-        {"user", required_argument, NULL, 'u'},
+        {"username", required_argument, NULL, 'u'},
         {"password", required_argument, NULL, 'p'},
         {"iface", optional_argument, NULL, 'i'},
         {"daemonize", no_argument, NULL, 'd'},
@@ -155,9 +155,9 @@ static struct option arglist[] = {
 
 static const char usage_str[] = "Usage: sysuh3c [arg]\n"
                 "   -h --help       print this screen\n"
-                "   -u --user       user account\n"
+                "   -u --username   user account\n"
                 "   -p --password   password\n"
-                "   -i --iface      network interface (default eth0)\n"
+                "   -i --iface      network interface\n"
                 "   -d --daemonize  daemonize\n"
                 "   -l --logoff     logoff\n";
 
@@ -175,7 +175,7 @@ int main(int argc, char **argv) {
         display_msg(LOG_ERR, "You have to run the program as root\n");
         exit(EXIT_FAILURE);
     }
-    
+
     eapauth_t eapauth;
     memset(&eapauth, 0, sizeof(eapauth));
 
@@ -186,7 +186,7 @@ int main(int argc, char **argv) {
                 exit(EXIT_SUCCESS);
             case 'u':
                 if (strlen(optarg) > 16) {
-                    display_msg(LOG_ERR, "name is too long");
+                    display_msg(LOG_ERR, "username is too long");
                     exit(EXIT_FAILURE);
                 }
                 strcpy(eapauth.name, optarg);
