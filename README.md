@@ -8,17 +8,18 @@ A CLI H3C Client for [OpenWRT](http://openwrt.org)
 Compilation
 ---
  - Compile with OpenWRT-SDK
-   ```bash
-   # Using ar71xx as example
-   tar xjf OpenWrt-SDK-ar71xx-for-linux-x86_64-gcc-4.8-linaro_uClibc-0.9.33.2.tar.bz2
-   cd OpenWrt-SDK-ar71xx-*
-   # Get Makefile
-   git clone git@github.com:chenhw2/sysuh3c.git -b openwrt package/sysuh3c
-   # Select target package: Network -> sysuh3c
-   make menuconfig
-   # Compile
-   make package/sysuh3c/compile V=99
-   ```
+
+ ```bash
+ # Using ar71xx as example
+ tar xjf OpenWrt-SDK-ar71xx-for-linux-x86_64-gcc-4.8-linaro_uClibc-0.9.33.2.tar.bz2
+ cd OpenWrt-SDK-ar71xx-*
+ # Get Makefile
+ git clone git@github.com:chenhw2/sysuh3c.git -b openwrt package/sysuh3c
+ # Select target package: Network -> sysuh3c
+ make menuconfig
+ # Compile
+ make package/sysuh3c/compile V=99
+ ```
 
 Usage
 ---
