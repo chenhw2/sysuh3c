@@ -9,12 +9,12 @@ PKG_BUILD_DIR := $(BUILD_DIR)/$(PKG_NAME)
 include $(INCLUDE_DIR)/package.mk
 
 define Package/$(PKG_NAME)
-        SECTION:=utils
-        CATEGORY:=Utilities
+        SECTION:=net
+        CATEGORY:=Network
         DEPENDS:=+libc +libgcc +libuci
-        TITLE:=sysuh3c
+        TITLE:=SYSU-EAST CAMPUS H3C Client
         PKGARCH:=ramips_24kec
-        MAINTAINER:=zonyitoo
+        MAINTAINER:=chenhw2
 endef
 
 define Package/$(PKG_NAME)/description
