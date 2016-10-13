@@ -19,6 +19,11 @@ Compilation
  make menuconfig
  # Compile
  make package/sysuh3c/compile V=99
+ # To Add LuCI Support
+ # Select target package: LuCI -> 3. Applications -> luci-app-sysuh3c
+ make menuconfig
+ # Compile
+ make package/luci-app-sysuh3c/compile V=99
  ```
 
 Usage
