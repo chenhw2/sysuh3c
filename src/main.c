@@ -16,9 +16,7 @@
  * =====================================================================================
  */
 #include <stdlib.h>
-#include "eapauth.h"
 #include <unistd.h>
-#include <stdlib.h>
 #include <stdio.h>
 #include <getopt.h>
 #include <signal.h>
@@ -27,17 +25,16 @@
 #include <sys/stat.h>
 #include <string.h>
 #include <syslog.h>
-#include "eaputils.h"
 #include <stdarg.h>
-//#include <uci.h>
 #include <termios.h>
 #include <assert.h>
+#include "eaputils.h"
+#include "eapauth.h"
 
 static const char *lockfname = "/var/run/sysuh3c.pid";
 int autoretry_count = 5;
 _Bool toDaemon = 0;
 _Bool isDaemon = 0;
-_Bool color = 0;
 _Bool has_login = 0;
 
 static void signal_handler(int signo) {
@@ -88,12 +85,8 @@ static void status_callback(int statno) {
     if (statno != EAPAUTH_EAP_RESPONSE) {
         if (isDaemon)
             syslog(LOG_INFO, "%s", strstat(statno));
-        else {
-            if (color)
-                printf("\033[01;%dm==> %s\033[0m\n", statno + 30, strstat(statno));
-            else
-                printf("%s\n", strstat(statno));
-        }
+        else
+            printf("%s\n", strstat(statno));
     }
     switch (statno) {
         case EAPAUTH_EAP_SUCCESS:
@@ -157,7 +150,6 @@ static struct option arglist[] = {
         {"iface", optional_argument, NULL, 'i'},
         {"daemonize", no_argument, NULL, 'd'},
         {"logoff", no_argument, NULL, 'l'},
-        {"colorize", no_argument, NULL, 'c'},
         {NULL, 0, NULL, 0}
     };
 
@@ -167,8 +159,7 @@ static const char usage_str[] = "Usage: sysuh3c [arg]\n"
                 "   -p --password   password\n"
                 "   -i --iface      network interface (default eth0)\n"
                 "   -d --daemonize  daemonize\n"
-                "   -l --logoff     logoff\n"
-                "   -c --colorize   colorize\n";
+                "   -l --logoff     logoff\n";
 
 
 int main(int argc, char **argv) {
@@ -179,11 +170,6 @@ int main(int argc, char **argv) {
     FILE *fp = NULL;
 
     _Bool toLogoff = 0;
-
-    /*
-    struct uci_context *uci_ctx = NULL;
-    struct uci_ptr uci_iface_ptr;
-    */
 
     if (geteuid() != 0) {
         display_msg(LOG_ERR, "You have to run the program as root\n");
@@ -221,9 +207,6 @@ int main(int argc, char **argv) {
             case 'l':
                 toLogoff = 1;
                 break;
-            case 'c':
-                color = 1;
-                break;
             default:
                 exit(EXIT_FAILURE);
         }
@@ -239,19 +222,6 @@ int main(int argc, char **argv) {
     }
 
     if (strlen(iface) == 0) {
-        /*
-        uci_ctx = uci_alloc_context();
-        char *expr = strdup("sysuh3c.@network[0].ifname");
-        if (uci_lookup_ptr(uci_ctx, &uci_iface_ptr, expr, true) != UCI_OK) {
-            uci_perror(uci_ctx, "Error while reading interface from config file");
-            exit(EXIT_FAILURE);
-        }
-        strcpy(iface, uci_iface_ptr.o->v.string);
-        if (strlen(iface) == 0)
-            strcpy(iface, "eth0");
-        uci_free_context(uci_ctx);
-        free(expr);
-        */
         display_msg(LOG_ERR, "no interface specified");
         exit(EXIT_FAILURE);
     }

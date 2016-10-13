@@ -11,7 +11,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/$(PKG_NAME)
         SECTION:=net
         CATEGORY:=Network
-        DEPENDS:=+libc +libgcc +libuci
+        DEPENDS:=+libc +libgcc
         TITLE:=SYSU-EAST CAMPUS H3C Client
         # PKGARCH:=ramips_24kec
         MAINTAINER:=chenhw2

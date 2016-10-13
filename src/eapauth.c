@@ -24,12 +24,11 @@
 #include <sys/ioctl.h>
 #include <sys/time.h>
 #include <net/if.h>
+#include <stdarg.h>
+#include <syslog.h>
 #include "eapdef.h"
 #include "eapauth.h"
 #include "eaputils.h"
-#include <stdio.h>
-#include <stdarg.h>
-#include <syslog.h>
 
 #ifndef __UCLIBC__
 typedef time_t __time_t;

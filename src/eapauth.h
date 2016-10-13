@@ -1,9 +1,9 @@
 #pragma once
 
-#include "eapdef.h"
 #include <netpacket/packet.h>
 #include <sys/socket.h>
 #include <net/if.h>
+#include "eapdef.h"
 
 #ifdef __cplusplus
 extern "C" {
