@@ -31,6 +31,10 @@
 #include <stdarg.h>
 #include <syslog.h>
 
+#ifndef __UCLIBC__
+typedef time_t __time_t;
+#endif
+
 int send_start(const eapauth_t *user);
 int send_logoff(const eapauth_t *user);
 int send_response_id(const eapauth_t *user, uint8_t packet_id);
@@ -61,7 +65,7 @@ static void (*display_promote)(int, const char *, ...) = display_promote_func;
 int eapauth_init(eapauth_t *user, const char *iface) {
     uint8_t mac_addr_buf[6] = {0};
     struct timeval timeout;
-    struct ifreq ifr; 
+    struct ifreq ifr;
     size_t i;
 
     if ((user->client_fd = socket(AF_PACKET, SOCK_RAW, htons(ETHERTYPE_PAE))) < 0) {
@@ -355,6 +359,6 @@ int eap_handler(const eapauth_t *user, const eapol_t *eapol_packet) {
 
 int eapauth_logoff(const eapauth_t *user) {
     if (user == NULL) return EAPAUTH_ERR;
-    
+
     return send_logoff(user);
 }
