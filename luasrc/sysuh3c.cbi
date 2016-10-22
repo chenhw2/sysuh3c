@@ -1,9 +1,9 @@
 require("luci.sys")
 
 if luci.sys.call("pidof sysuh3c >/dev/null") == 0 then
-	m = Map("sysuh3c", translate("SYSU-H3C"), translate("Configure SYSU H3C.  - sysuh3c is running"))
+	m = Map("sysuh3c", translate("SYSU-H3C"), translate("Configure SYSU H3C.  - <div class=\"errorbox\">sysuh3c is running</div>"))
 else
-	m = Map("sysuh3c", translate("SYSU-H3C"), translate("Configure SYSU H3C.  - sysuh3c is not running"))
+	m = Map("sysuh3c", translate("SYSU-H3C"), translate("Configure SYSU H3C.  - <div class=\"error\">sysuh3c is not running</div>"))
 end
 m.reset = false
 
