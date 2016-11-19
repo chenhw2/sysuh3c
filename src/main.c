@@ -148,6 +148,7 @@ static struct option arglist[] = {
         {"username", required_argument, NULL, 'u'},
         {"password", required_argument, NULL, 'p'},
         {"iface", optional_argument, NULL, 'i'},
+        {"method", optional_argument, NULL, 'm'},
         {"daemonize", no_argument, NULL, 'd'},
         {"logoff", no_argument, NULL, 'l'},
         {NULL, 0, NULL, 0}
@@ -158,6 +159,7 @@ static const char usage_str[] = "Usage: sysuh3c [arg]\n"
                 "   -u --username   user account\n"
                 "   -p --password   password\n"
                 "   -i --iface      network interface\n"
+                "   -m --method     EAP-MD5 CHAP method [xor/md5] (default xor)\n"
                 "   -d --daemonize  daemonize\n"
                 "   -l --logoff     logoff\n";
 
@@ -167,6 +169,7 @@ int main(int argc, char **argv) {
     int ret;
     char iface[8] = {0};
     char argval;
+    eap_method method = EAP_METHOD_XOR;
     FILE *fp = NULL;
 
     _Bool toLogoff = 0;
@@ -179,7 +182,7 @@ int main(int argc, char **argv) {
     eapauth_t eapauth;
     memset(&eapauth, 0, sizeof(eapauth));
 
-    while ((argval = getopt_long(argc, argv, "u:p:i:dlhc", arglist, NULL)) != -1) {
+    while ((argval = getopt_long(argc, argv, "u:p:i:m:dlhc", arglist, NULL)) != -1) {
         switch (argval) {
             case 'h':
                 printf(usage_str);
@@ -200,6 +203,16 @@ int main(int argc, char **argv) {
                 break;
             case 'i':
                 strcpy(iface, optarg);
+                break;
+            case 'm':
+                if (strcmp(optarg, "xor") == 0)
+                    method = EAP_METHOD_XOR;
+                else if (strcmp(optarg, "md5") == 0)
+                    method = EAP_METHOD_MD5;
+                else {
+                    display_msg(LOG_ERR, "Argument Error. Method can only be xor or md5");
+                    exit(EXIT_FAILURE);
+                }
                 break;
             case 'd':
                 toDaemon = 1;
@@ -226,7 +239,7 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
 
-    if (eapauth_init(&eapauth, iface) != 0)
+    if (eapauth_init(&eapauth, iface, method) != 0)
         exit(EXIT_FAILURE);
 
     if (toLogoff) {
