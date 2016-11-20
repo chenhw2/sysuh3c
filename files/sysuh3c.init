@@ -9,6 +9,7 @@ get_config() {
 	config_get_bool enable $1 enable
 	config_get username $1 username
 	config_get password $1 password
+	config_get method   $1 method
 }
 
 start() {
@@ -21,7 +22,7 @@ start() {
 	[ -n "$ifname" ] && [ -n "$username" ] && [ -n "$password" ] || exit 1
 
 	echo " # sysuh3c --iface $ifname --username $username --password $password"
-	/usr/bin/sysuh3c -i $ifname -u $username -p $password -d
+	/usr/bin/sysuh3c -i $ifname -u $username -p $password -m $method -d
 	return $?
 }
 

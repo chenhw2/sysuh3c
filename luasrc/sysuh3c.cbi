@@ -16,6 +16,11 @@ un = s:option(Value, "username", translate("Username"))
 pw = s:option(Value, "password", translate("Password"))
 pw.password = true
 
+method = s:option(ListValue, "method", "Method")
+method:value("md5", "MD5")
+method:value("xor", "XOR")
+method.default = md5
+
 local apply = luci.http.formvalue("cbi.apply")
 if apply then
 	io.popen("/etc/init.d/sysuh3c restart")
