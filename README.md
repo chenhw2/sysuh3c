@@ -29,13 +29,13 @@ endef
 
 ## Usage
 
-```bash
--h --help        print help screen
--u --user        user account
--p --password    password
--i --iface       network interface (default is eth0)
--m --method      EAP-MD5 CHAP method [xor/md5] (default xor)
--d --daemonize   daemonize
--c --colorize    colorize
--l --logoff      logoff
-```
+ ```bash
+ -h --help        print help screen
+ -u --username    user account
+ -p --password    password
+ -i --iface       network interface
+ -m --method      EAP-MD5 CHAP method [xor/md5] (default xor)
+ -d --daemonize   daemonize
+ -l --logoff      logoff
+ ```
+ 

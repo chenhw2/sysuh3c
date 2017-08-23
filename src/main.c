@@ -29,7 +29,6 @@
 #include <syslog.h>
 #include "eaputils.h"
 #include <stdarg.h>
-#include <uci.h>
 #include <termios.h>
 #include <assert.h>
 
@@ -37,7 +36,6 @@ static const char *lockfname = "/var/run/sysuh3c.pid";
 int autoretry_count = 5;
 _Bool toDaemon = 0;
 _Bool isDaemon = 0;
-_Bool color = 0;
 _Bool has_login = 0;
 
 static void signal_handler(int signo) {
@@ -88,12 +86,8 @@ static void status_callback(int statno) {
     if (statno != EAPAUTH_EAP_RESPONSE) {
         if (isDaemon)
             syslog(LOG_INFO, "%s", strstat(statno));
-        else {
-            if (color)
-                printf("\033[01;%dm==> %s\033[0m\n", statno + 30, strstat(statno));
-            else
-                printf("%s\n", strstat(statno));
-        }
+        else
+            printf("%s\n", strstat(statno));
     }
     switch (statno) {
         case EAPAUTH_EAP_SUCCESS:
@@ -152,25 +146,23 @@ static void get_pass(char *storage, size_t length, const char *promote) {
 
 static struct option arglist[] = {
         {"help", no_argument, NULL, 'h'},
-        {"user", required_argument, NULL, 'u'},
+        {"username", required_argument, NULL, 'u'},
         {"password", required_argument, NULL, 'p'},
         {"iface", optional_argument, NULL, 'i'},
         {"method", optional_argument, NULL, 'm'},
         {"daemonize", no_argument, NULL, 'd'},
         {"logoff", no_argument, NULL, 'l'},
-        {"colorize", no_argument, NULL, 'c'},
         {NULL, 0, NULL, 0}
     };
 
 static const char usage_str[] = "Usage: sysuh3c [arg]\n"
                 "   -h --help       print this screen\n"
-                "   -u --user       user account\n"
+                "   -u --username   user account\n"
                 "   -p --password   password\n"
-                "   -i --iface      network interface (default eth0)\n"
+                "   -i --iface      network interface\n"
                 "   -m --method     EAP-MD5 CHAP method [xor/md5] (default xor)\n"
                 "   -d --daemonize  daemonize\n"
-                "   -l --logoff     logoff\n"
-                "   -c --colorize   colorize\n";
+                "   -l --logoff     logoff\n";
 
 
 int main(int argc, char **argv) {
@@ -182,9 +174,6 @@ int main(int argc, char **argv) {
     FILE *fp = NULL;
 
     _Bool toLogoff = 0;
-
-    struct uci_context *uci_ctx = NULL;
-    struct uci_ptr uci_iface_ptr;
 
     if (geteuid() != 0) {
         display_msg(LOG_ERR, "You have to run the program as root\n");
@@ -203,7 +192,7 @@ int main(int argc, char **argv) {
                 exit(EXIT_SUCCESS);
             case 'u':
                 if (strlen(optarg) > 16) {
-                    display_msg(LOG_ERR, "name is too long");
+                    display_msg(LOG_ERR, "username is too long");
                     exit(EXIT_FAILURE);
                 }
                 strcpy(eapauth.name, optarg);
@@ -234,9 +223,6 @@ int main(int argc, char **argv) {
             case 'l':
                 toLogoff = 1;
                 break;
-            case 'c':
-                color = 1;
-                break;
             default:
                 exit(EXIT_FAILURE);
         }
@@ -252,17 +238,8 @@ int main(int argc, char **argv) {
     }
 
     if (strlen(iface) == 0) {
-        uci_ctx = uci_alloc_context();
-        char *expr = strdup("sysuh3c.@network[0].ifname");
-        if (uci_lookup_ptr(uci_ctx, &uci_iface_ptr, expr, true) != UCI_OK) {
-            uci_perror(uci_ctx, "Error while reading interface from config file");
-            exit(EXIT_FAILURE);
-        }
-        strcpy(iface, uci_iface_ptr.o->v.string);
-        if (strlen(iface) == 0)
-            strcpy(iface, "eth0");
-        uci_free_context(uci_ctx);
-        free(expr);
+        display_msg(LOG_ERR, "interface required!");
+        exit(EXIT_FAILURE);
     }
 
     if (eapauth_init(&eapauth, iface, method) != 0)
@@ -283,7 +260,7 @@ int main(int argc, char **argv) {
     }
 
     if (strlen(eapauth.password) == 0) {
-        get_pass(&eapauth.password, sizeof(eapauth.password), "Password");
+        get_pass((char *) &eapauth.password, sizeof(eapauth.password), "Password");
     }
 
     eapauth_set_status_listener(status_callback);

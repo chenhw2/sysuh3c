@@ -1,7 +1,5 @@
 #CFLAGS= -Wall -Os -Ofast
 #LDFLAGS= -Os -Ofast
-CFLAGS += -luci
-LDFLAGS += -luci
 
 sysuh3c: main.o eapauth.o eaputils.o md5.o
 	$(CC) $(LDFLAGS) $^ -o $@
