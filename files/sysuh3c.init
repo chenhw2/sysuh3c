@@ -1,0 +1,41 @@
+#!/bin/sh /etc/rc.common
+
+START=90
+STOP=15
+NAME=sysuh3c
+
+uci_get_by_type() {
+	local ret=$(uci get $NAME.@$1[0].$2 2>/dev/null)
+	echo ${ret:=$3}
+}
+
+uci_bool_by_type() {
+	case "$(uci_get_by_type $1 $2)" in
+		1|on|true|yes|enabled) return 0;;
+	esac
+	return 1
+}
+
+start() {
+	uci_bool_by_type sysuh3c enable || exit 0
+
+	username=$(uci_get_by_type sysuh3c username)
+	password=$(uci_get_by_type sysuh3c password)
+	method=$(uci_get_by_type sysuh3c method xor)
+	ifname=$(uci -q get network.wan.ifname eth0)
+	[ -n "$ifname" ] && [ -n "$username" ] && [ -n "$password" ] || exit 1
+
+	echo " # sysuh3c --iface $ifname --username $username --password $password --method $method"
+	/usr/bin/sysuh3c -i $ifname -u $username -p $password -m $method -d
+	return $?
+}
+
+kill_all() {
+	kill -9 $(pgrep -f $@) >/dev/null 2>&1
+}
+
+stop() {
+	( /usr/bin/sysuh3c --logoff >/dev/null 2>&1 ) &
+	sleep 1
+	kill_all /usr/bin/sysuh3c
+}
